@@ -26,6 +26,7 @@ def myrentpage(request):
     context = {
         'key': 'value',
     }
+    print(request.user.last_name)
     return render(request, 'my-rent.html', context)
 
 
