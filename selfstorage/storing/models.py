@@ -18,17 +18,17 @@ class StoreHouse(models.Model):
     image = models.ImageField(
         verbose_name='Изображение',
     )
-    store_class=models.CharField(
+    store_class = models.CharField(
         max_length=2,
         default='D',
         verbose_name='Класс склада',
     )
     temperature = models.SmallIntegerField(
-        max_length=3,
         default='N/A',
         verbose_name='Температура в складских помещениях',
     )
-    contacts = models.JSONField(
+    contacts = models.CharField(
+        max_length=150,
         blank=True,
         default='',
         verbose_name='Контакты',
@@ -68,18 +68,26 @@ class Box(models.Model):
         verbose_name='Номер бокса',
     )
     length = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
         verbose_name='Длина, м.',
     )
     width = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
         verbose_name='Ширина, м.',
     )
     height = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
         verbose_name='Высота, м.',
     )
     floor = models.SmallIntegerField(
         verbose_name='Этаж',
     )
     price = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
         verbose_name='Цена, руб',
     )
 
@@ -111,7 +119,8 @@ class Lease(models.Model):
     )
 
     def __str__(self):
-        return f'{self.lease_begin_datetime.date()}-{self.lease_end_datetime.date()} {self.box.number} - {self.box.storehouse.title} - {self.leaser}'
+        return (f'{self.lease_begin_datetime.date()}-{self.lease_end_datetime.date()} {self.box.number} - '
+                f'{self.box.storehouse.title} - {self.leaser}')
 
     class Meta:
         verbose_name = 'Аренда бокса'

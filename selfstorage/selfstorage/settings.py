@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'phonenumber_field',
+
+    'storing',
 ]
 
 MIDDLEWARE = [
@@ -128,7 +130,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
-STATICFILES_DIRS= [
+STATICFILES_DIRS = [
     BASE_DIR / 'assets',
 ]
 
@@ -141,3 +143,6 @@ MEDIA_ROOT = BASE_DIR / 'mediafiles'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Custom user model
+AUTH_USER_MODEL = 'storing.Client'
