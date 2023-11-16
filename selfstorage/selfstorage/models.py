@@ -7,31 +7,115 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 
 class StoreHouse(models.Model):
-    title = models.CharField('Адрес', max_length=200)
-    photo = models.ImageField('Фото')
-    temperature = models.IntegerField('Температура')
-    contacts = models.JSONField('Контакты')
-    description = models.TextField('Описание')
-    driveway = models.TextField('Схема проезда')
+    title = models.CharField(
+        max_length=150,
+        verbose_name='Название',
+    )
+    address = models.CharField(
+        max_length=200,
+        verbose_name='Адрес',
+    )
+    image = models.ImageField(
+        verbose_name='Изображение',
+    )
+    store_class=models.CharField(
+        max_length=2,
+        default='D',
+        verbose_name='Класс склада',
+    )
+    temperature = models.SmallIntegerField(
+        max_length=3,
+        default='N/A',
+        verbose_name='Температура в складских помещениях',
+    )
+    contacts = models.JSONField(
+        blank=True,
+        default='',
+        verbose_name='Контакты',
+    )
+    description = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Описание',
+    )
+    driveway_text = models.TextField(
+        blank=True,
+        default='',
+        verbose_name='Схема проезда - текст',
+    )
+    driveway_image = models.ImageField(
+        blank=True,
+        null=True,
+        verbose_name='Схема проезда - изображение',
+    )
 
     def __str__(self):
-        return self.title
+        return f'{self.title}: {self.address}'
+
+    class Meta:
+        verbose_name = 'Склад'
+        verbose_name_plural = 'Склады'
 
 
 class Box(models.Model):
-    storehouse = models.ForeignKey(StoreHouse, on_delete=models.CASCADE, verbose_name='Склад')
-    number = models.CharField('Номер', max_length=10)
-    floor = models.IntegerField('Этаж')
-    length = models.FloatField('Длина')
-    width = models.FloatField('Ширина')
-    height = models.FloatField('Высота')
-    price = models.IntegerField('Цена')
-    leaser = models.ForeignKey('UserProfile', verbose_name='Арендатор')
-    lease_start = models.DateTimeField('Начало аренды', default=timezone.now)
-    lease_finish = models.DateTimeField('Начало аренды', default=timezone.now)
+    storehouse = models.ForeignKey(
+        'StoreHouse',
+        on_delete=models.CASCADE,
+        verbose_name='Склад'
+    )
+    number = models.CharField(
+        max_length=10,
+        verbose_name='Номер бокса',
+    )
+    length = models.DecimalField(
+        verbose_name='Длина, м.',
+    )
+    width = models.DecimalField(
+        verbose_name='Ширина, м.',
+    )
+    height = models.DecimalField(
+        verbose_name='Высота, м.',
+    )
+    floor = models.SmallIntegerField(
+        verbose_name='Этаж',
+    )
+    price = models.DecimalField(
+        verbose_name='Цена, руб',
+    )
 
     def __str__(self):
-        return self.title
+        return f'№ {self.number} - {self.width}x{self.length}x{self.height}, склад: {self.storehouse.title}'
+
+    class Meta:
+        verbose_name = 'Бокс>'
+        verbose_name_plural = 'Боксы'
+
+
+class Lease(models.Model):
+    leaser = models.ForeignKey(
+        'Client',
+        on_delete=models.CASCADE,
+        verbose_name='Арендатор',
+    )
+    box = models.ForeignKey(
+        'Box',
+        on_delete=models.PROTECT,
+        verbose_name='Бокс'
+    )
+    lease_begin_datetime = models.DateTimeField(
+        default=timezone.now,
+        verbose_name='Дата/время начала срока аренды',
+    )
+    lease_end_datetime = models.DateTimeField(
+        verbose_name='Дата/время завершения срока аренды',
+    )
+
+    def __str__(self):
+        return f'{self.lease_begin_datetime.date()}-{self.lease_end_datetime.date()} {self.box.number} - {self.box.storehouse.title} - {self.leaser}'
+
+    class Meta:
+        verbose_name = 'Аренда бокса'
+        verbose_name_plural = 'Аренда боксов'
 
 
 class Client(AbstractUser):
