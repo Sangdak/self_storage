@@ -1,5 +1,8 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
+from django.db.models import Count, Min, Max
+from django.utils.timezone import localtime
+from .models import StoreHouse, Box, Lease
 
 
 def mainpage(request):
@@ -17,8 +20,20 @@ def faqpage(request):
 
 
 def boxespage(request):
+    now = localtime()
+    all_storehouses = StoreHouse.objects.all()
+    for storehouse in all_storehouses:
+        storehouse.boxes_count = storehouse.boxes.count()
+        storehouse.minimal_price = storehouse.boxes.aggregate(Min('price'))
+        storehouse.max_ceiling_height = storehouse.boxes.aggregate(Max('height'))
+
+        all_boxes = storehouse.boxes.all()
+        boxes_ids = [box.id for box in all_boxes]
+        leased_boxes = Lease.objects.filter(box__in=boxes_ids).filter(lease_end_datetime__gt=now).count()
+        storehouse.free_boxes = storehouse.boxes_count - leased_boxes
+
     context = {
-        'key': 'value',
+        'all_storehouses': all_storehouses,
     }
     return render(request, 'boxes.html', context)
 
