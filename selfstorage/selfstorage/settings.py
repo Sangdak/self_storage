@@ -146,3 +146,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom user model
 AUTH_USER_MODEL = 'storing.Client'
+
+AUTHENTICATION_BACKENDS = (
+    'selfstorage.backends.EmailBackend',
+)

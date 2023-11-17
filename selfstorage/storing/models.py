@@ -134,12 +134,13 @@ class Client(AbstractUser):
         verbose_name='E-mail',
     )
     phone_number = PhoneNumberField(
-        unique=True,
+        # unique=True,
         blank=True,
         region='RU',
         verbose_name='Номер телефона'
     )
     image = models.ImageField(
+        default='img/img1.png',
         verbose_name='Аватар',
     )
 

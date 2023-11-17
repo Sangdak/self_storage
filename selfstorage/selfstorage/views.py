@@ -1,37 +1,64 @@
-from django.shortcuts import render
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
+from django.urls import reverse
+
+from .forms import LoginForm, SignupForm
+from storing.models import Client
 
 
-def mainpage(request):
+def user_login(request):
+    if request.method == 'POST':
+        form = LoginForm(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            print(cd)
+            user = authenticate(username=cd['email'], password=cd['password'])
+            print(user)
+            if user is not None:
+                if user.is_active:
+                    login(request, user)
+                    # return HttpResponse('Authenticated successfully')
+                    return redirect(reverse('storing:myrent_page'))
+                else:
+                    return HttpResponse('Disabled account')
+            else:
+                return HttpResponse('Invalid login')
+    else:
+        form = LoginForm()
     context = {
-        'key': 'value',
+        'form': form,
+        'auth_switch': {
+            'login_window': True,
+        }
     }
     return render(request, 'index.html', context)
 
 
-def faqpage(request):
+def user_signup(request):
+    form = SignupForm(request.POST)
+    if request.method == 'POST':
+        if form.is_valid():
+            cd = form.cleaned_data
+            if cd['password1'] == cd['password2']:
+                user = Client.objects.create_user(
+                    username=cd['email'].split('@')[0],
+                    first_name=cd['email'].split('@')[0],
+                    email=cd['email'],
+                    password=cd['password1'],
+                )
+                user.save()
+                print(user.username)
+                return redirect(reverse('login'))
     context = {
-        'key': 'value',
+        'reg_form': form,
+        'auth_switch': {
+            'registration_window': True,
+        }
     }
-    return render(request, 'faq.html', context)
+    return render(request, 'index.html', context)
 
 
-def boxespage(request):
-    context = {
-        'key': 'value',
-    }
-    return render(request, 'boxes.html', context)
-
-
-def myrentpage(request):
-    context = {
-        'key': 'value',
-    }
-    print(request.user.last_name)
-    return render(request, 'my-rent.html', context)
-
-
-def myrentemptypage(request):
-    context = {
-        'key': 'value',
-    }
-    return render(request, 'my-rent-empty.html', context)
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('storing:main_page'))
