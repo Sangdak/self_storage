@@ -86,7 +86,7 @@ class Box(models.Model):
         verbose_name='Этаж',
     )
     price = models.DecimalField(
-        max_digits=4,
+        max_digits=7,
         decimal_places=2,
         verbose_name='Цена, руб',
     )
