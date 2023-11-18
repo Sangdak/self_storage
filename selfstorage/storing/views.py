@@ -60,10 +60,12 @@ def boxespage(request):
 
 @login_required(login_url='accounts/login/')
 def myrentpage(request):
+    user_boxes = Lease.objects.filter(leaser__id=request.user.id)
+
     context = {
-        'key': 'value',
+        'boxes': user_boxes,
     }
-    print(request.user.last_name)
+
     return render(request, 'my-rent.html', context)
 
 
