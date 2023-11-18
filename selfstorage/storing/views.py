@@ -19,22 +19,42 @@ def faqpage(request):
     return render(request, 'faq.html', context)
 
 
+# def boxespage(request):
+#     now = localtime()
+#     all_storehouses = StoreHouse.objects.all()
+#     for storehouse in all_storehouses:
+#         storehouse.boxes_count = storehouse.boxes.count()
+#         storehouse.minimal_price = storehouse.boxes.aggregate(Min('price'))
+#         storehouse.max_ceiling_height = storehouse.boxes.aggregate(Max('height'))
+#
+#         all_boxes = storehouse.boxes.all()
+#         boxes_ids = [box.id for box in all_boxes]
+#         leased_boxes = Lease.objects.filter(box__in=boxes_ids).filter(lease_end_datetime__gt=now).count()
+#         storehouse.free_boxes = storehouse.boxes_count - leased_boxes
+#
+#     context = {
+#         'all_storehouses': all_storehouses,
+#     }
+#     return render(request, 'boxes.html', context)
+
+
 def boxespage(request):
     now = localtime()
-    all_storehouses = StoreHouse.objects.all()
-    for storehouse in all_storehouses:
-        storehouse.boxes_count = storehouse.boxes.count()
-        storehouse.minimal_price = storehouse.boxes.aggregate(Min('price'))
-        storehouse.max_ceiling_height = storehouse.boxes.aggregate(Max('height'))
+    storehouses = StoreHouse.objects.all()
+    for storehouse in storehouses:
+        storehouse_boxes = storehouse.boxes.all()
+        leased_boxes_number = (Lease.objects.filter(box__storehouse__id=storehouse.id)
+                               .filter(lease_end_datetime__gte=now).count())
 
-        all_boxes = storehouse.boxes.all()
-        boxes_ids = [box.id for box in all_boxes]
-        leased_boxes = Lease.objects.filter(box__in=boxes_ids).filter(lease_end_datetime__gt=now).count()
-        storehouse.free_boxes = storehouse.boxes_count - leased_boxes
+        storehouse.boxes_number = storehouse_boxes.count()
+        storehouse.box_minimal_price = storehouse.boxes.aggregate(Min('price'))
+        storehouse.box_max_height = storehouse.boxes.aggregate(Max('height'))
+        storehouse.free_boxes_number = storehouse.boxes_number - leased_boxes_number
 
     context = {
-        'all_storehouses': all_storehouses,
+        'storehouses': storehouses,
     }
+
     return render(request, 'boxes.html', context)
 
 

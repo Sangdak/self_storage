@@ -61,6 +61,7 @@ class Box(models.Model):
     storehouse = models.ForeignKey(
         'StoreHouse',
         on_delete=models.CASCADE,
+        related_name='boxes',
         verbose_name='Склад'
     )
     number = models.CharField(
@@ -134,7 +135,7 @@ class Client(AbstractUser):
         verbose_name='E-mail',
     )
     phone_number = PhoneNumberField(
-        # unique=True,
+            # unique=True,
         blank=True,
         region='RU',
         verbose_name='Номер телефона'

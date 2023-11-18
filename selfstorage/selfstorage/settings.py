@@ -89,7 +89,9 @@ WSGI_APPLICATION = 'selfstorage.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
+        'HOST': 'localhost',
         'NAME': BASE_DIR / 'test_db.sqlite3',
+        'PORT': 3306,
     }
 }
 
