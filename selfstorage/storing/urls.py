@@ -11,4 +11,5 @@ urlpatterns = [
     path('boxes/', boxespage, name='boxes_page'),
     path('my-rent/', myrentpage, name='myrent_page'),
     path('my-rent-empty/', myrentemptypage, name='myrentempty_page'),
+    path('cost-calculation/', costcalculationpage, name='cost_calculation'),
 ]
