@@ -8,7 +8,9 @@ services:
     image: selfstorage:latest
     container_name: selfstorage_site
     volumes:
-      - ~/.selfstorage:/testuser:Z
+      - static_volume:/testuser/staticfiles
+      - media_volume:/testuser/mediafiles
+      - ~/.selfstorage/files/:/testuser/test_db.sqlite3
     command: >
       bash -c "./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 selfstorage.wsgi:application"
     env_file:
@@ -24,7 +26,8 @@ services:
     image: selfstorage_nginx
     container_name: selfstorage_nginx
     volumes:
-      - ~/.selfstorage/files/:/testuser:Z
+      - static_volume:/testuser/staticfiles
+      - media_volume:/testuser/mediafiles
       - certs:/etc/nginx/certs
       - vhost:/etc/nginx/vhost.d
       - html:/usr/share/nginx/html
@@ -45,6 +48,8 @@ services:
       - acme:/etc/acme.sh
 
 volumes:
+  static_volume:
+  media_volume:
   certs:
   vhost:
   html:
