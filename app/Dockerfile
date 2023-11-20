@@ -21,7 +21,7 @@ RUN useradd -rms /bin/bash testuser && chmod 777 /opt /run
 
 WORKDIR /testuser
 
-RUN mkdir /testuser/staticfiles && mkdir /astrouser/mediafiles && chown -R testuser:testuser /testuser && chmod 755 /testuser
+RUN mkdir /testuser/staticfiles && mkdir /testuser/mediafiles && chown -R testuser:testuser /testuser && chmod 755 /testuser
 
 COPY --chown=testuser:testuser . .
 
