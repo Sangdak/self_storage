@@ -156,3 +156,7 @@ AUTH_USER_MODEL = 'storing.Client'
 AUTHENTICATION_BACKENDS = (
     'selfstorage.backends.EmailBackend',
 )
+
+CSRF_TRUSTED_ORIGINS = []
+if csrf_subdomain := env.str('CSRF_SUBDOMAIN'):
+    CSRF_TRUSTED_ORIGINS += [f'http://{csrf_subdomain}', f'https://{csrf_subdomain}']
