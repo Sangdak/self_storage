@@ -32,7 +32,7 @@ def user_login(request):
             'login_window': True,
         }
     }
-    return render(request, '../templates/index.html', context)
+    return render(request, 'index.html', context)
 
 
 def user_signup(request):
@@ -56,7 +56,7 @@ def user_signup(request):
             'registration_window': True,
         }
     }
-    return render(request, '../templates/index.html', context)
+    return render(request, 'index.html', context)
 
 
 def user_logout(request):
