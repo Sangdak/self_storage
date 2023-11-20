@@ -22,6 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 env = environ.Env()
 env.read_env(os.path.join(BASE_DIR, '..', '.env'))
+env.read_env(os.path.join(BASE_DIR, '..', '.env_db'))
 
 
 # Quick-start development settings - unsuitable for production
@@ -88,11 +89,13 @@ WSGI_APPLICATION = 'selfstorage.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'HOST': 'localhost',
-        'NAME': BASE_DIR / 'test_db.sqlite3',
-        'PORT': 3306,
+    "default": {
+        "ENGINE": 'django.db.backends.postgresql',
+        "NAME": env.str('DB_DATABASE', 'defaultdb'),
+        "USER": env.str('DB_USER', 'defaultuser'),
+        "PASSWORD": env.str('DB_PASSWORD'),
+        "HOST": env.str('DB_HOST', 'localhost'),
+        "PORT": env.int('DB_PORT', 5432),
     }
 }
 
