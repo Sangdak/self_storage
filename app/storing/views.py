@@ -10,14 +10,14 @@ def mainpage(request):
     context = {
         'key': 'value',
     }
-    return render(request, '../templates/index.html', context)
+    return render(request, 'index.html', context)
 
 
 def faqpage(request):
     context = {
         'key': 'value',
     }
-    return render(request, '../templates/faq.html', context)
+    return render(request, 'faq.html', context)
 
 
 # def boxespage(request):
@@ -56,7 +56,7 @@ def boxespage(request):
         'storehouses': storehouses,
     }
 
-    return render(request, '../templates/boxes.html', context)
+    return render(request, 'boxes.html', context)
 
 
 @login_required(login_url='accounts/login/')
@@ -67,14 +67,14 @@ def myrentpage(request):
         'boxes': user_boxes,
     }
 
-    return render(request, '../templates/my-rent.html', context)
+    return render(request, 'my-rent.html', context)
 
 
 def myrentemptypage(request):
     context = {
         'key': 'value',
     }
-    return render(request, '../templates/my-rent-empty.html', context)
+    return render(request, 'my-rent-empty.html', context)
 
 
 def costcalculationpage(request):
@@ -93,7 +93,11 @@ def costcalculationpage(request):
             active_leases = Lease.objects.filter(box__storehouse__id=storehouse.id).filter(lease_end_datetime__gte=now)
             leased_boxes = [lease.box.id for lease in active_leases]
             free_boxes = storehouse_boxes.exclude(id__in=leased_boxes)
-            fit_free_boxes = free_boxes.filter(length__gte=cargo_length, width__gte=cargo_width, height__gte=cargo_height).order_by('price')
+            fit_free_boxes = free_boxes.filter(
+                length__gte=cargo_length,
+                width__gte=cargo_width,
+                height__gte=cargo_height
+            ).order_by('price')
 
             if fit_free_boxes:
                 fit_free_box = fit_free_boxes[0]
@@ -106,11 +110,11 @@ def costcalculationpage(request):
             'box': box,
             }
 
-        return render(request, '../templates/cost-calculation.html', context)
+        return render(request, 'cost-calculation.html', context)
 
     else:
         form = CalcForm()
         context = {
             'form': form,
         }
-        return render(request, '../templates/cost-calculation.html', context)
+        return render(request, 'cost-calculation.html', context)

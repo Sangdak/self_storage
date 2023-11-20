@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from app.storing.models import Box, Client, Lease, StoreHouse
+from storing.models import Box, Client, Lease, StoreHouse
 
 
 admin.site.register(Box)

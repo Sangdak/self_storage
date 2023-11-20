@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from .forms import LoginForm, SignupForm
-from app.storing.models import Client
+from storing.models import Client
 
 
 def user_login(request):
