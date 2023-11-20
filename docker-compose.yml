@@ -1,0 +1,51 @@
+version: '2'
+
+services:
+  dj:
+    build:
+      dockerfile: Dockerfile
+      context: ./app
+    image: selfstorage:latest
+    container_name: selfstorage_site
+    volumes:
+      - ~/.selfstorage:/testuser:Z
+    command: >
+      bash -c "./manage.py collectstatic --noinput && ./manage.py migrate && gunicorn -b 0.0.0.0:8000 selfstorage.wsgi:application"
+    env_file:
+      - .env
+    environment:
+      - VIRTUAL_HOST=${ALLOWED_HOST}
+      - LETSENCRYPT_HOST=${ALLOWED_HOST}
+
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    image: selfstorage_nginx
+    container_name: selfstorage_nginx
+    volumes:
+      - ~/.selfstorage/files/:/testuser:Z
+      - certs:/etc/nginx/certs
+      - vhost:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    ports:
+      - "${NGINX_EXTERNAL_PORT:-80}:80"
+      - "${NGINX_EXTERNAL_SSL_PORT:-443}:443"
+    depends_on:
+      - dj
+
+  acme_companion:
+    image: nginxproxy/acme-companion:2.2
+    container_name: selfstorage_acme_companion
+    volumes_from:
+      - nginx
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme:/etc/acme.sh
+
+volumes:
+  certs:
+  vhost:
+  html:
+  acme:

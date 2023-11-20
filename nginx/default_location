@@ -1,0 +1,7 @@
+ location /static/ {
+        alias /testuser/staticfiles/;
+    }
+
+    location /media/ {
+        alias /testuser/mediafiles/;
+    }
