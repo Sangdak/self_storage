@@ -28,6 +28,8 @@ services:
     environment:
       - VIRTUAL_HOST=${ALLOWED_HOST}
       - LETSENCRYPT_HOST=${ALLOWED_HOST}
+    depends_on:
+      - db
 
   nginx:
     build:
