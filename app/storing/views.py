@@ -1,7 +1,10 @@
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
 from django.db.models import Count, Min, Max
+from django.shortcuts import render
 from django.utils.timezone import localtime
+
 from .models import StoreHouse, Box, Lease
 from .forms import CalcForm
 
@@ -61,7 +64,23 @@ def boxespage(request):
 
 @login_required(login_url='accounts/login/')
 def myrentpage(request):
+    now = localtime()
     user_boxes = Lease.objects.filter(leaser__id=request.user.id)
+    for box in user_boxes:
+        lease_delta = datetime(
+            box.lease_end_datetime.year,
+            box.lease_end_datetime.month,
+            box.lease_end_datetime.day
+        ) - datetime.now()
+        box.rest_lease_day = lease_delta.days
+        box.is_paid = True
+        if box.rest_lease_day < 0:
+            box.new_price = box.box.price * 1,5
+            box.is_paid = False
+
+        # print(now)
+        # print(box.lease_end_datetime.strftime('%Y, %m, %d'))
+        # print(box.rest_lease_day)
 
     context = {
         'boxes': user_boxes,

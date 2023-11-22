@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'crispy_forms',
+    'crispy_bootstrap5',
     'phonenumber_field',
 
     'storing',
@@ -159,3 +161,10 @@ AUTHENTICATION_BACKENDS = (
 CSRF_TRUSTED_ORIGINS = []
 if csrf_subdomain := env.str('CSRF_SUBDOMAIN'):
     CSRF_TRUSTED_ORIGINS += [f'http://{csrf_subdomain}', f'https://{csrf_subdomain}']
+
+# Crispy-forms
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# end Crispy-forms

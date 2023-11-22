@@ -36,8 +36,8 @@ def user_login(request):
 
 
 def user_signup(request):
-    form = SignupForm(request.POST)
     if request.method == 'POST':
+        form = SignupForm(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
             if cd['password1'] == cd['password2']:
@@ -50,8 +50,10 @@ def user_signup(request):
                 user.save()
                 print(user.username)
                 return redirect(reverse('login'))
+    else:
+        form = SignupForm()
     context = {
-        'reg_form': form,
+        'form': form,
         'auth_switch': {
             'registration_window': True,
         }
